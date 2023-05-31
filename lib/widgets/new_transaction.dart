@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import './user_transaction.dart';
+import 'package:my_second_app/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/transaction.dart';
+import './screen.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function addTx;
@@ -17,7 +21,7 @@ class _NewTransactionState extends State<NewTransaction> {
   final _amountController = TextEditingController();
   DateTime _selectedDate;
 
-  void _submitData() {
+  /*void _submitData() {
     if (_amountController.text.isEmpty) {
       return;
     }
@@ -36,7 +40,7 @@ class _NewTransactionState extends State<NewTransaction> {
     );
 
     Navigator.of(context).pop();
-  }
+  }*/
 
   void _presentDatePicker() {
     showDatePicker(
@@ -57,6 +61,7 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
+    // getSavedData(context);
     return Card(
       elevation: 5,
       child: Container(
@@ -67,14 +72,20 @@ class _NewTransactionState extends State<NewTransaction> {
             TextField(
               decoration: InputDecoration(labelText: 'Title'),
               controller: _titleController,
-              onSubmitted: (_) => _submitData(),
+              onSubmitted: (_) => saveDataToStorage(
+                  _titleController.text,
+                  _amountController.text,
+                  DateFormat.yMd().format(_selectedDate)),
               //onChanged: (val) => titleInput = val,
             ),
             TextField(
               decoration: InputDecoration(labelText: 'Amount'),
               controller: _amountController,
               keyboardType: TextInputType.number,
-              onSubmitted: (_) => _submitData(),
+              onSubmitted: (_) => saveDataToStorage(
+                  _titleController.text,
+                  _amountController.text,
+                  DateFormat.yMd().format(_selectedDate)),
               //  onChanged: (val) => amountInput = val,
             ),
             Container(
@@ -101,16 +112,75 @@ class _NewTransactionState extends State<NewTransaction> {
                 ],
               ),
             ),
-            TextButton(
-              onPressed: _submitData,
-              child: Text('Add_Transaction'),
+            ElevatedButton(
+              onPressed: () => {
+                //_submitData,
+                saveDataToStorage(_titleController.text, _amountController.text,
+                    DateFormat.yMd().format(_selectedDate))
+              },
+              child: Text('Save'),
               //color: Theme.of(context).primaryColor,
               // textColor: Theme.of(context).textTheme.button.color,
               //textColor: Colors.white,
             ),
+            /*Container(
+              child: Row(
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {
+                      saveDataToStorage(_titleController.text,
+                          _amountController.text, _selectedDate.toString());
+                    },
+                    child: Text('Save'),
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  ElevatedButton(
+                    child: Text("View saved notes"),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Screen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),*/
           ],
         ),
       ),
     );
+  }
+
+  Future<void> saveDataToStorage(tc, ac, dt) async {
+    // print(tc);
+
+    final sharedPrefs = await SharedPreferences.getInstance();
+    await sharedPrefs.setString('saved_title', tc);
+    await sharedPrefs.setString('saved_amount', ac);
+    await sharedPrefs.setString('saved_date', dt);
+
+    if (_amountController.text.isEmpty) {
+      return;
+    }
+
+    final enteredTitle = _titleController.text;
+    final enteredAmount = double.parse(_amountController.text);
+
+    if (enteredTitle.isEmpty || enteredAmount <= 0 || _selectedDate == null) {
+      return;
+    }
+
+    widget.addTx(
+      enteredTitle,
+      enteredAmount,
+      _selectedDate,
+    );
+
+    Navigator.of(context).pop();
   }
 }
