@@ -2,15 +2,7 @@
 
 A new Flutter project.
 
-## Getting Started
+●	Successfully developed a robust expenditure tracking app using the Flutter framework, enabling users to efficiently monitor their spending habits over a week
+●	Incorporated a number of features into the app, such as interactive charts and the ability to add or remove new transactions leading to 15% increased user engagement.
+●	Presented the same at the Athena - technical festival at TKMCE. Received special appreciation from faculties and peers
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
